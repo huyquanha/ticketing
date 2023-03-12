@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth
+  template:
+    metadata:
+      labels:
+        app: auth
+    spec:
+      containers:
+      - name: auth
+        image: us.gcr.io/tidy-alchemy-358010/auth
+        resources:
+          limits:
+            # https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#meaning-of-memory
+            memory: "512Mi"
+            # https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#meaning-of-cpu
+            cpu: "300m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-srv
+# default type is ClusterIP, so no need to specify.
+spec:
+  selector:
+    app: auth
+  ports:
+  - name: auth
+    protocol: TCP
+    port: 3000
+    targetPort: 3000
+

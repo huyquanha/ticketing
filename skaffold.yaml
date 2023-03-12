@@ -1,0 +1,21 @@
+apiVersion: skaffold/v2alpha3
+kind: Config
+deploy:
+  kubectl:
+    manifests:
+      - ./infra/k8s/*
+build:
+  # You can only have one option so have to comment out local.
+  # local:
+  #   push: false
+  googleCloudBuild:
+    projectId: tidy-alchemy-358010
+  artifacts:
+    - image: us.gcr.io/tidy-alchemy-358010/auth
+      context: auth
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: 'src/**/*.ts'
+            dest: .
